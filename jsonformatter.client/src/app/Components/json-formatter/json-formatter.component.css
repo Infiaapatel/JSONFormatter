@@ -1,0 +1,291 @@
+/* main box Css */
+.main {
+  width: 100%;
+  height: calc(100vh - 60px); /* Adjusted to account for header height */
+  display: flex;
+  gap: 10px;
+  background-color: #dedddd;
+  padding: 5px;
+  overflow: hidden; /* Prevent overflow on the main container */
+}
+
+.left-box, .right-box {
+  width: 42%;
+  display: flex; /* Added to manage child components */
+  flex-direction: column; /* Children stack vertically */
+  position: relative; /* Added for positioning of inner status bars */
+}
+
+/* Input/output Box Css */
+.editor-container {
+  width: 100%;
+  height: 100%; /* Changed to 100% to fill parent */
+  border: 1px solid;
+  flex-grow: 1; /* Allow editor to take available space */
+  overflow: auto; /* Enable scrolling for editors */
+}
+/*headerbar css for leftbox and rightbox*/
+.header-bar {
+  height: 40px; /* Fixed height for header bar */
+  min-height: 40px; /* Ensure it doesn't shrink */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #234653;
+  color: #ffffff;
+  padding: 0 8px;
+  flex-shrink: 0; /* Prevent header bar from shrinking */
+}
+
+/*headerbar icon div css*/
+.div1 {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.div2 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  align-items: center;
+}
+
+
+/* Hover Iocn */
+.group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+  /* Hover effects */
+  .group:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+
+  /* Click effect */
+  .group:active {
+    transform: translateY(1.5px); /* Moves the icon slightly down */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Adds a subtle shadow */
+    background-color: rgba(255, 255, 255, 0.3); /* Slightly brighter background on click */
+  }
+
+/* searchbar Css */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.search-input {
+  border: 1px solid #444444;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #154163;
+  height: 28px;
+}
+
+.search-controls {
+  display: none;
+  align-items: center;
+  gap: 5px;
+}
+/* Hide search controls by default, only show when input has value */
+.search-input:not(:placeholder-shown) + .search-controls {
+  display: flex;
+}
+
+.search-input::placeholder {
+  color: #154163;
+}
+
+.search-button {
+  color: #ffffff;
+  background-color: transparent;
+  padding: 2px;
+}
+
+.search-count {
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.search-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Middle Box - Main Container */
+.middle-box {
+  width: 16%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 3%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  flex-shrink: 0; 
+}
+
+/* Upper Area - Buttons for Format, Minify, Encode, Decode */
+.middle-box-upperarea {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Lower Area - Encryption/Decryption Sections */
+.middle-box-lowerarea {
+  display: flex;
+  flex-direction: column;
+  /* gap: 20px;*/
+}
+
+  .middle-box-lowerarea.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+/* Middle Buttons - Main Style */
+.middle-button {
+  width: 100%;
+  border: 2px solid #234653;
+  border-radius: 6px;
+  font-size: 20px;
+  color: #234653;
+  background-color: transparent;
+  padding: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background-color 0.2s, color 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+  /* Button Hover Effect */
+  .middle-button:hover {
+  background-color: #234653;
+  color: #ffffff;
+  border-color: #234653; 
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Click Effect (Active State) for inward press */
+  .middle-button:active {
+  background-color: #1a3a46;
+  border-color: #1a3a46;
+  transform: translateY(2px);
+  }
+
+
+  /* Active state for buttons (for persistent highlight after click) */
+  .middle-button.active-button {
+    background-color: #234653;
+    color: #ffffff;
+    border-color: #234653;
+  }
+
+
+
+.divider {
+  background-color: #234653;
+  width: 100%;
+  height: 1.6px;
+}
+
+.box-1, .box-2, .box-3 {
+  margin: 1rem 0rem;
+  border-radius: 6px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  gap: 10px;
+}
+
+.bxn {
+  font-size: 25px;
+  color: #234653;
+  margin-bottom: 0.5rem;
+}
+
+.tooltip-text {
+  font-size: 12px;
+  color: #154163;
+  opacity: 0.75;
+  transform: translateY(5px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 0.75;
+    transform: translateY(0);
+  }
+}
+
+/* --- START CHANGES: Separate Status bars for left and right boxes --- */
+/* Base style for both status bars */
+.editor-status-bar-left,
+.editor-status-bar-right {
+  background-color: #234653;
+  color: #ffffff;
+  padding: 5px 10px;
+  font-size: 14px;
+  text-align: right;
+  flex-shrink: 0; /* Prevent from shrinking */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Responsive adjustments for mobile */
+@media screen and (max-width: 480px) {
+
+  .main {
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 60px);
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .left-box, .right-box {
+    width: 100%;
+  }
+
+  .header-bar {
+    height: 40px;
+  }
+
+  .editor-container {
+    width: 100%;
+    height: 25rem;
+    min-height: 200px;
+  }
+
+  .middle-box {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .middle-button {
+    width: 48%;
+  }
+
+  .search-container {
+    display: none;
+  }
+
+  /* Adjust status bars for mobile to flow with content */
+  .editor-status-bar-left,
+  .editor-status-bar-right {
+    position: relative;
+    text-align: center;
+    width: auto;
+    left: auto;
+  }
+}
+/* --- END CHANGES --- */

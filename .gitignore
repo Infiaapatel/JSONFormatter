@@ -1,0 +1,28 @@
+# .NET build artifacts
+**/bin/
+**/obj/
+
+# Angular build artifacts
+.Client/node_modules/
+.Client/dist/
+.Client/.angular/
+
+# Logs
+*.log
+
+# Environment files
+.Client/.env
+.Server/.env
+
+# IDE settings
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS files
+.DS_Store
+Thumbs.db
+
+JSONFormatter.Server/.config/

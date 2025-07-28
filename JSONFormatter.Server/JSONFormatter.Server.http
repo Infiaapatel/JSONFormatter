@@ -1,0 +1,6 @@
+@JSONFormatter.Server_HostAddress = http://localhost:5191
+
+GET {{JSONFormatter.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

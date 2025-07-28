@@ -1,0 +1,171 @@
+<app-header></app-header>
+<div class="main">
+  <!-- leftbox -->
+  <div class="left-box">
+    <!-- headerbar-left -->
+    <span class="header-bar">
+      <span class="div1">
+        <span class="group" (click)="FormatJson('input')" title="FormatJson" >
+          <img src="../../../assets/Image/bar-chart.svg" />
+        </span>
+        <span class="group" (click)="CompactJson('input')" title="CompactJson" >
+          <img src="../../../assets/Image/bars.svg" />
+        </span>
+      </span>
+
+      <!-- right-div -->
+      <span class="div2">
+        <span (click)="onSampleData()" class="sample mainstyel">Sample</span>
+        <input type="file" #fileInput (change)="onFileSelect($event)" style="display: none" accept=".json" multiple />
+        <span class="group" (click)="fileInput.click()" title="OpenFile">
+          <img src="../../../assets/Image/file-folder.svg" />
+        </span>
+        <span class="group" (click)="copyClipboard(inputValue)" title="Copy">
+          <img src="../../../assets/Image/copy.svg" />
+        </span>
+        <span class="group" (click)="clearContent('input')" title="Delete">
+          <img src="../../../assets/Image/delete.svg" />
+        </span>
+        <span class="group" (click)="toggleFullScreen('left')" title="FullScreen">
+          <img src="../../../assets/Image/Expand.svg" />
+        </span>
+      </span>
+    </span>
+
+    <!-- left Editor Container -->
+    <div #editorContainer class="editor-container mainstyel"></div>
+
+    <!-- START CHANGES: Separate Status bar for left box -->
+    <div class="editor-status-bar-left">
+      <span>Ln {{ inputLine }}, Col {{ inputCol }}</span>
+    </div>
+    <!-- END CHANGES -->
+  </div>
+
+  <div class="middle-box">
+
+    <div class="middle-box-upperarea">
+      <button accesskey="j" title="Shortcut: Alt + J" class="middle-button" (click)="onConvertJson()"
+              [class.active-button]="activeButton === 'format'">
+        Format / Beautifier <span class="tooltip-text"></span>
+      </button>
+      <button accesskey="n" title="Shortcut: Alt + N" class="middle-button" (click)="OnConvertMinify()"
+              [class.active-button]="activeButton === 'minify'">
+        Minify / Compact <span class="tooltip-text"></span>
+      </button>
+      <button accesskey="x" title="Shortcut: Alt + X" class="middle-button" (click)="onEncoded()"
+              [class.active-button]="activeButton === 'encode'">
+        Base64Encode <span class="tooltip-text"></span>
+      </button>
+      <button accesskey="y" title="Shortcut: Alt + Y" class="middle-button" (click)="onDecodeAndFormat()"
+              [class.active-button]="activeButton === 'decodeAndFormat'">
+        Base64Decode <span class="tooltip-text"></span>
+      </button>
+    </div>
+
+
+    <!--lowerarea-->
+    <div class="middle-box-lowerarea" *ngIf="isLoggedIn" [class.disabled]="!isLoggedIn">
+      <!--divider-->
+      <div class="divider"></div>
+
+      <!--lowerarea-->
+      <div class="box-1">
+        <div class="bxn">Web:</div>
+        <div>
+          <button accesskey="u" title="Shortcut: Alt + U" class="middle-button" (click)="encrypt(inputValue, '1')"
+                  [class.active-button]="activeButton === 'encrypt-1'">
+            Encrypt <span class="tooltip-text"></span>
+          </button>
+          <button accesskey="i" title="Shortcut: Alt + I" class="middle-button" (click)="decrypt(inputValue, '1')"
+                  [class.active-button]="activeButton === 'decrypt-1'">
+            Decrypt <span class="tooltip-text"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="box-2">
+        <div class="bxn">Backend:</div>
+        <div>
+          <button accesskey="c" title="Shortcut: Alt + C" class="middle-button" (click)="encrypt(inputValue, '2')"
+                  [class.active-button]="activeButton === 'encrypt-2'">
+            Encrypt <span class="tooltip-text"></span>
+          </button>
+          <button accesskey="v" title="Shortcut: Alt + V" class="middle-button" (click)="decrypt(inputValue, '2')"
+                  [class.active-button]="activeButton === 'decrypt-2'">
+            Decrypt <span class="tooltip-text"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="box-3">
+
+        <div class="bxn">Analytics:</div>
+        <div>
+          <button accesskey="g" title="Shortcut: Alt + G" class="middle-button" (click)="encrypt(inputValue, '3')"
+                  [class.active-button]="activeButton === 'encrypt-3'">
+            Encrypt <span class="tooltip-text"></span>
+          </button>
+          <button accesskey="h" title="Shortcut: Alt + H" class="middle-button" (click)="decrypt(inputValue, '3')"
+                  [class.active-button]="activeButton === 'decrypt-3'">
+            Decrypt <span class="tooltip-text"></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- rightbox -->
+  <div class="right-box">
+    <span class="header-bar">
+      <span class="div1">
+        <span class="group tooltip-container" (click)="FormatJson('output')" title="FormatJson">
+          <img src="../../../assets/Image/bar-chart.svg" />
+        </span>
+        <span class="group" (click)="CompactJson('output')" title="CompactJson">
+          <img src="../../../assets/Image/bars.svg" />
+        </span>
+        <span class="group" (click)="moveData()" accesskey="r" title="Shortcut: Alt + R">
+          <img src="../../../assets/Image/left-arrow.svg" />
+        </span>
+        <span class="search-container">
+          <input type="text" class="search-input" [(ngModel)]="searchQuery" placeholder="Search..."
+                 (input)="onSearch()" />
+          <span class="search-controls">
+            <span class="group" (click)="navigateSearch(false)">
+              <img src="../../../assets/Image/chevron-up.svg" />
+            </span>
+            <span class="search-count"> {{ searchResults.length > 0 ? currentSearchIndex + 1 : 0 }}/{{ searchResults.length }} </span>
+            <span class="group" (click)="navigateSearch(true)">
+              <img src="../../../assets/Image/chevron-down.svg" />
+            </span>
+          </span>
+        </span>
+      </span>
+      <span class="div2">
+        <span class="group" (click)="downloadContent()" title="Download">
+          <img src="../../../assets/Image/Download.svg" />
+        </span>
+        <span class="group" (click)="copyClipboard(outputValue)" title="Copy">
+          <img src="../../../assets/Image/copy.svg" />
+        </span>
+        <span class="group" (click)="clearContent('output')" title="Delete">
+          <img src="../../../assets/Image/delete.svg" />
+        </span>
+        <span class="group" (click)="toggleFullScreen('right')" title="FullScreen">
+          <img src="../../../assets/Image/Expand.svg" />
+        </span>
+      </span>
+    </span>
+
+    <!-- right Editor Container -->
+    <div #outputEditorContainer class="editor-container mainstyel"></div>
+
+    <!-- START CHANGES: Separate Status bar for right box -->
+    <div class="editor-status-bar-right">
+      <span>Ln {{ outputLine }}, Col {{ outputCol }}</span>
+    </div>
+    <!-- END CHANGES -->
+  </div>
+</div>

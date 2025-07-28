@@ -1,0 +1,140 @@
+<app-header></app-header>
+<div class="main">
+  <!-- leftbox -->
+  <div class="left-box" #leftBox>
+    <!-- headerbar-left -->
+    <span class="header-bar">
+      <!-- left-div -->
+      <span class="div1"> </span>
+
+      <!-- right-div -->
+      <span class="div2">
+        <span (click)="onSampleData()" class="sample mainstyel">Sample</span>
+        <input type="file" #fileInput (change)="onFileSelect($event)" style="display: none" accept=".sql" multiple />
+        <span class="group" (click)="fileInput.click()" title="OpenFile">
+          <img src="../../../assets/Image/file-folder.svg" />
+        </span>
+        <span class="group" (click)="copyClipboard('input')" title="Copy">
+          <img src="../../../assets/Image/copy.svg" />
+        </span>
+        <span class="group" (click)="clearContent('input')" title="Delete">
+          <img src="../../../assets/Image/delete.svg" />
+        </span>
+        <span class="group" (click)="toggleFullScreen('left')" title="FullScreen">
+          <img src="../../../assets/Image/Expand.svg" />
+        </span>
+      </span>
+    </span>
+
+    <!-- left TextArea -->
+    <div #editor class="editor"></div>
+
+    <!-- START CHANGES: Separate Status bar for left box -->
+    <div class="editor-status-bar-left">
+      <span>Ln {{ inputLine }}, Col {{ inputCol }}</span>
+    </div>
+    <!-- END CHANGES -->
+  </div>
+
+  <!-- middle box -->
+  <div class="middle-box">
+    <div class="options-panel">
+      <h3 style="color: #234653;">SQL Formatting Options</h3>
+      <div class="option-group">
+        <label>Tab width:</label>
+        <input type="number" [(ngModel)]="tabWidth" min="1" (change)="onOptionChange()">
+      </div>
+      <div class="option-group">
+        <label>
+          Use tabs:
+        </label>
+        <input type="checkbox" [(ngModel)]="useTabs" (change)="onOptionChange()">
+      </div>
+      <div class="option-group">
+        <label>Indentation style:</label>
+        <select [(ngModel)]="indentStyle" (change)="onOptionChange()">
+          <option value="standard">Standard</option>
+          <option value="tabularLeft">Tabular Left</option>
+          <option value="tabularRight">Tabular Right</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Keyword case:</label>
+        <select [(ngModel)]="keywordCase" (change)="onOptionChange()">
+          <option value="preserve">Preserve</option>
+          <option value="upper">Upper</option>
+          <option value="lower">Lower</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Data type case:</label>
+        <select [(ngModel)]="dataTypeCase" (change)="onOptionChange()">
+          <option value="preserve">Preserve</option>
+          <option value="upper">Upper</option>
+          <option value="lower">Lower</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Function case:</label>
+        <select [(ngModel)]="functionCase" (change)="onOptionChange()">
+          <option value="preserve">Preserve</option>
+          <option value="upper">Upper</option>
+          <option value="lower">Lower</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Identifier case:</label>
+        <select [(ngModel)]="identifierCase" (change)="onOptionChange()">
+          <option value="preserve">Preserve</option>
+          <option value="upper">Upper</option>
+          <option value="lower">Lower</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Expression width:</label>
+        <input type="number" [(ngModel)]="expressionWidth" min="10" (change)="onOptionChange()">
+      </div>
+      <div class="option-group">
+        <label>Lines between queries:</label>
+        <input type="number" [(ngModel)]="linesBetweenQueries" min="0" (change)="onOptionChange()">
+      </div>
+      <div>
+        <button class="middle-button-reset" (click)="resetOptions()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- rightbox -->
+  <div class="right-box" #rightBox>
+    <!-- rightbox headerbar -->
+    <span class="header-bar">
+      <!-- left-div -->
+      <span class="div1"> </span>
+      <span class="div2">
+        <span class="group" (click)="downloadContent()" title="Download">
+          <img src="../../../assets/Image/Download.svg" />
+        </span>
+        <span class="group" (click)="copyClipboard('output')" title="Copy">
+          <img src="../../../assets/Image/copy.svg" />
+        </span>
+        <span class="group" (click)="clearContent('output')" title="Delete">
+          <img src="../../../assets/Image/delete.svg" />
+        </span>
+        <span class="group" (click)="toggleFullScreen('right')" title="FullScreen">
+          <img src="../../../assets/Image/Expand.svg" />
+        </span>
+      </span>
+
+
+    </span>
+
+    <!-- rightbox textarea -->
+    <div #outputEditor class="editor"></div>
+
+    <!-- START CHANGES: Separate Status bar for right box -->
+    <div class="editor-status-bar-right">
+      <span>Ln {{ outputLine }}, Col {{ outputCol }}</span>
+    </div>
+    <!-- END CHANGES -->
+  </div>
+</div>

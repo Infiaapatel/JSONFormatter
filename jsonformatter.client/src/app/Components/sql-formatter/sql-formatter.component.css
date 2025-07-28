@@ -1,0 +1,218 @@
+/* main box Css */
+.main {
+  width: 100%;
+  height: calc(100vh - 60px); /* Adjusted to account for header height */
+  display: flex;
+  gap: 10px;
+  background-color: #dedddd;
+  padding: 5px;
+  overflow: hidden; /* Prevent overflow on the main container */
+}
+
+.left-box, .right-box {
+  width: 42%;
+  display: flex; /* Added to manage child components */
+  flex-direction: column; /* Children stack vertically */
+  position: relative; /* Added for positioning of inner status bars */
+}
+/* Input/output Box Css */
+.editor {
+  width: 100%;
+  height: 100%; /* Changed to 100% to fill parent */
+  border: 2px solid #154163;
+  flex-grow: 1; /* Allow editor to take available space */
+  overflow: auto; /* Enable scrolling for editors */
+}
+
+/*headerbar css for leftbox and rightbox*/
+.header-bar {
+  height: 40px; /* Fixed height for header bar */
+  min-height: 40px; /* Ensure it doesn't shrink */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #234653;
+  color: #ffffff;
+  padding: 0 8px;
+  flex-shrink: 0; /* Prevent header bar from shrinking */
+}
+
+/*headerbar icon div css*/
+
+.div2 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  align-items: center;
+}
+
+
+/* Hover Iocn */
+.group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+  /* Hover effects */
+  .group:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+
+  /* Click effect for header icons */
+  .group:active {
+    transform: translateY(1.5px); /* Slight downward push */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Subtle glow */
+    background-color: rgba(255, 255, 255, 0.3); /* Slightly brighter */
+  }
+
+.tooltip-text {
+  font-size: 12px;
+  color: #154163;
+  opacity: 0.75;
+  transform: translateY(5px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 0.75;
+    transform: translateY(0);
+  }
+}
+
+
+/* middel box css */
+.middle-box {
+  width: 16%;
+  padding-top: 3%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-y: auto; /* Allow scrolling if options panel exceeds space */
+  flex-shrink: 0; /* Prevent middle box from shrinking excessively */
+}
+
+.options-panel {
+  padding: 10px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.option-group {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+  .option-group label {
+    min-width: 120px;
+  }
+
+input[type="number"] {
+  width: 60px;
+  padding: 4px;
+}
+
+select {
+  padding: 4px;
+  min-width: 100px;
+}
+
+
+.middle-button-reset {
+  border: 2px solid;
+  border-radius: 7px;
+  font-size: 20px;
+  width: 100%;
+  color: #234653;
+  transition: all 0.3s;
+  background-color: transparent;
+}
+
+  .middle-button-reset:hover {
+    background-color: #234653;
+    color: #ffffff;
+    border-color: #234653;
+    cursor: pointer;
+  }
+
+  /* Click effect for reset button */
+  .middle-button-reset:active {
+    transform: translateY(1px); /* Slight downward push */
+    box-shadow: 0 0 8px rgba(35, 70, 83, 0.6); /* Shadow matching button color */
+    background-color: #1c3944; /* Slightly darker background on click */
+    color: #ffffff;
+  }
+
+
+/* --- START CHANGES: Separate Status bars for left and right boxes --- */
+/* Base style for both status bars */
+.editor-status-bar-left,
+.editor-status-bar-right {
+  background-color: #234653;
+  color: #ffffff;
+  padding: 5px 10px;
+  font-size: 14px;
+  text-align: right;
+  flex-shrink: 0; /* Prevent from shrinking */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@media screen and (max-width: 480px) {
+
+  .main {
+    width: 100%;
+    height: auto; /* Allow height to adjust based on content */
+    min-height: calc(100vh - 60px); /* Ensure a minimum height */
+    flex-direction: column;
+    overflow-y: auto; /* Enable scrolling for the main container on small screens */
+  }
+
+  .left-box, .right-box {
+    width: 100%;
+  }
+
+  .header-bar {
+    height: 40px; /* Consistent fixed height */
+  }
+
+  .editor {
+    width: 100%;
+    height: 25rem; /* Fixed height for editors on mobile */
+    min-height: 200px; /* Ensure a minimum height */
+  }
+
+  .middle-box {
+    width: 100%;
+    height: auto; /* Allow height to adjust */
+    padding-top: 10px; /* Adjust padding for mobile */
+    flex-direction: row; /* Options can wrap */
+    flex-wrap: wrap; /* Allow options to wrap */
+    justify-content: center; /* Center options */
+  }
+
+  .option-group {
+    width: 48%; /* Adjust width for two options per row on mobile */
+    margin-bottom: 10px;
+    flex-direction: column; /* Stack label and input/select */
+    align-items: flex-start; /* Align items to the start */
+  }
+
+  .middle-button-reset {
+    width: 48%; /* Adjust width for two buttons per row on mobile */
+  }
+
+  /* Adjust status bars for mobile to flow with content */
+  .editor-status-bar-left,
+  .editor-status-bar-right {
+    position: relative;
+    text-align: center;
+    width: auto;
+    left: auto;
+  }
+}

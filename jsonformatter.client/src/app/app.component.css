@@ -1,0 +1,8 @@
+/* styles.css */
+.container {
+  height: 100vh; /* Equivalent to Tailwind's h-screen */
+  width: 100%; /* Equivalent to Tailwind's w-full */
+  display: flex; /* Added to manage child components */
+  flex-direction: column; /* Children stack vertically */
+  overflow: hidden; /* Prevent overflow on the app component level */
+}

@@ -1,0 +1,366 @@
+/*main header*/
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #234653;
+  padding: 10px 2.5%;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+/*logo for infinnuim*/
+.logo-container {
+  width: 10%;
+  min-width: 100px;
+  height: fit-content;
+}
+
+  .logo-container img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+  }
+
+/*it is for links*/
+.main-style {
+  display: flex;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  gap: 35px;
+}
+
+a {
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+  a:hover {
+    cursor: pointer;
+  }
+
+.active-link {
+  text-decoration: underline;
+}
+
+
+/*open sidbar for login*/
+.sidebar {
+  position: fixed;
+  top: 0; /* Changed from 60px to 0 */
+  right: -100%;
+  width: 400px;
+  max-width: 90%;
+  background-color: #ffffff;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.30);
+  transition: right 0.4s ease-in-out;
+  z-index: 1000;
+  padding: 30px 25px;
+  border-radius: 12px 0 0 12px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex; /* Added for better content alignment */
+  flex-direction: column; /* Added for better content alignment */
+}
+
+  .sidebar.active {
+    right: 0;
+  }
+
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+  .close-btn:hover {
+    color: #000;
+  }
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0; /* Prevent heading from shrinking */
+}
+
+.sidebar-logo {
+  height: 40px;
+}
+
+.heading h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.myForm {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allow form to take available space */
+  overflow-y: auto; /* Enable scrolling for the form if content is too long */
+}
+
+  .myForm .form-group {
+    margin-bottom: 20px;
+  }
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+  .form-control:focus {
+    outline: none;
+    border-color: #3f51b5;
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+  }
+
+.input-wrapper {
+  position: relative;
+}
+
+.toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+  .toggle-icon img {
+    width: 20px;
+    height: 20px;
+  }
+
+.error {
+  margin-top: 5px;
+  color: #e53935;
+  font-size: 15px;
+}
+
+.btn {
+  width: 100%;
+  background-color: #e76f51;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+  .btn:hover {
+    background-color: #e74c3c;
+  }
+
+  .btn:disabled {
+    background-color: #f09e89;
+    cursor: not-allowed;
+  }
+
+
+.sidebar-logo {
+  width: 11rem;
+  margin-bottom: 2px;
+}
+
+.success {
+  margin-top: 5px;
+  color: #155724;
+  font-size: 0.9rem;
+  padding: 5px;
+  border-radius: 4px;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  margin-bottom: 10px;
+}
+
+
+/* Logout confirmation dialog styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.logout-confirm-dialog {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 350px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+  .logout-confirm-dialog h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .logout-confirm-dialog p {
+    margin-bottom: 24px;
+    color: #555;
+  }
+
+.logout-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel {
+  background-color: #f1f1f1;
+  color: #333;
+  border: 1px solid #ddd;
+  width: 50%;
+}
+.btn-cancel:hover{
+  background-color: #ddd;
+}
+
+.btn-confirm {
+  background-color: #e76f51;
+  color: white;
+  width: 50%;
+  border: none;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+
+/* Mobile menu icon */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Loader container */
+.loader-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  border-radius: 5px;
+}
+
+/* Code loader animation */
+.code-loader {
+  color: #264653;
+  font-family: Consolas, Menlo, Monaco, monospace;
+  font-weight: bold;
+  font-size: 60px; /* Adjusted size to fit in the login container */
+  opacity: 0.8;
+}
+
+  .code-loader span {
+    display: inline-block;
+    animation: pulse_414 0.4s alternate infinite ease-in-out;
+  }
+
+    .code-loader span:nth-child(odd) {
+      animation-delay: 0.4s;
+    }
+
+@keyframes pulse_414 {
+  to {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/*for responciness*/
+@media screen and (max-width: 480px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  .main-style {
+    position: fixed;
+    top: 60px; /* Keep consistent with header height */
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 60px); /* Adjust height to fill remaining viewport */
+    background-color: #234653;
+    flex-direction: column;
+    gap: 0;
+    z-index: 999;
+    padding: 10px 0;
+    transition: left 0.3s ease;
+    overflow-y: auto; /* Enable scrolling for main-style on mobile */
+  }
+
+    .main-style.active {
+      left: 0;
+    }
+
+    .main-style div {
+      width: 100%;
+      padding: 10px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+      .main-style div:last-child {
+        border-bottom: none;
+      }
+
+  .sidebar {
+    width: 100%;
+    top: 0;
+    height: 100vh;
+    border-radius: 0;
+  }
+}

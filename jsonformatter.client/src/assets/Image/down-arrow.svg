@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
+  <!-- Vertical shaft -->
+  <line fill="none" stroke="#ffffff" stroke-width="2" stroke-miterlimit="10" x1="12" y1="3" x2="12" y2="19"/>
+  
+  <!-- Arrowhead pointing down -->
+  <polyline fill="none" stroke="#ffffff" stroke-width="2" stroke-miterlimit="10" points="6,14.5 12,20 18,14.5"/>
+</svg>

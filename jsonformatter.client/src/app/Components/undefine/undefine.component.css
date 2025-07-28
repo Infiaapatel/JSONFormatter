@@ -1,0 +1,46 @@
+div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; /* Center text within the div */
+  padding: 20px; /* Add some padding */
+  box-sizing: border-box; /* Include padding in element's total width and height */
+  max-width: 90%; /* Ensure it doesn't overflow on very small screens */
+}
+
+h1 {
+  font-size: 50px;
+  margin-bottom: 10px;
+  color: #154163;
+}
+
+p {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #154163;
+}
+
+a {
+  text-decoration: none;
+  color: #154163;
+  font-size: 18px;
+}
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+@media screen and (max-width: 480px) {
+  h1 {
+    font-size: 36px; /* Adjust font size for smaller screens */
+  }
+
+  p {
+    font-size: 16px; /* Adjust font size for smaller screens */
+  }
+
+  a {
+    font-size: 16px; /* Adjust font size for smaller screens */
+  }
+}

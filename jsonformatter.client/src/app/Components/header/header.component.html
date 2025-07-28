@@ -1,0 +1,92 @@
+<div class="header">
+  <div class="logo-container">
+    <img src="../../../assets/Image/infinnium_white.svg" alt="logo" class="logo" />
+  </div>
+
+  <!-- Mobile menu toggle button -->
+  <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+    <img src="../../../assets/Image/bars.svg" />
+  </button>
+
+  <div class="main-style">
+    <div>
+      <a routerLink="/jsonFormatter" routerLinkActive="active-link">JSON-Formatter</a>
+    </div>
+    <div>
+      <a routerLink="/sqlFormatter" routerLinkActive="active-link">SQL-Formatter</a>
+    </div>
+    <div>
+      <a routerLink="/text-Diff" routerLinkActive="active-link">Text-Difference</a>
+    </div>
+    <div *ngIf="!isLoggedIn">
+      <a (click)="toggleSidebar()" class="cursor-pointer">Login</a>
+    </div>
+    <div [class.show]="isDropdownOpen" *ngIf="isLoggedIn">
+      <a (click)="initiateLogout()">Logout</a>
+    </div>
+  </div>
+
+  <!--when click login btn open side bar-->
+  <div class="sidebar" [class.active]="isSidebarOpen">
+    <div class="sidebar-header">
+      <button (click)="toggleSidebar()" class="close-btn">&times;</button>
+    </div>
+    <div class="heading">
+      <img src="../../../assets/Image/infinnium-logo-light.svg" alt="Logo" class="sidebar-logo" />
+      <h2>Login to your account</h2>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="myForm">
+      <div class="form-group">
+        <label for="userId" class="form-label">User Name</label>
+        <input type="text" id="userId" formControlName="userName" placeholder="Enter your User Name"
+          class="form-control" required #userNameInput />
+        <div *ngIf="userName?.invalid && (userName?.dirty || userName?.touched)" class="error">
+          <div *ngIf="userName?.errors?.['required']">User ID is required</div>
+          <!--<div *ngIf="userName?.errors?.['minlength']">User ID must be at least 6 characters</div>-->
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-wrapper">
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+            placeholder="Enter your Password" class="form-control" required />
+          <span class="toggle-icon" (click)="togglePasswordVisibility()">
+            <img *ngIf="showPassword" src="../../../assets/Image/UnVisibility.svg" alt="Hide Password" />
+            <img *ngIf="!showPassword" src="../../../assets/Image/Visibility.svg" alt="Show Password" />
+          </span>
+        </div>
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error">
+          <div *ngIf="password?.errors?.['required']">Password is required</div>
+          <!--<div *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</div>-->
+        </div>
+      </div>
+      <button type="submit" [disabled]="loginForm.invalid" class="btn"> Login </button>
+      <div *ngIf="loginError" class="error" style="margin-top: 10px;"> {{ loginError }} </div>
+    </form>
+  </div>
+
+  <!-- Logout Confirmation Dialog -->
+  <div class="modal-overlay" *ngIf="showLogoutConfirm">
+
+    <div class="logout-confirm-dialog">
+      <div class="sidebar-header">
+        <button (click)="cancelLogout()" class="close-btn">&times;</button>
+      </div>
+      <h3>Confirm Logout</h3>
+      <p>Are you sure you want to log out?</p>
+      <div class="logout-buttons">
+        <button class="btn btn-cancel" (click)="cancelLogout()">Cancel</button>
+        <button class="btn btn-confirm" (click)="confirmLogout()">Yes, Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Animation -->
+  <div *ngIf="loadingService.isLoading$ | async" class="loader-container">
+    <div class="code-loader">
+      <span>{{ '{' }}</span><span>{{ '}' }}</span>
+    </div>
+  </div>
+
+</div>

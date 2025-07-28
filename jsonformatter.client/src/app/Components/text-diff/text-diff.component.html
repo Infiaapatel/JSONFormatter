@@ -1,0 +1,105 @@
+<app-header></app-header>
+<!--main container-->
+<div class="main-container">
+  <!--top button-->
+  <div class="diff-action-container">
+    <div class="diff-action-buttons">
+      <button class="btn-diff compare" (click)="startComparison()" [class.hidden]="isComparing">
+        <img class="material-icons" src="../../../assets/Image/compare.svg" />
+        Compare
+      </button>
+    </div>
+  </div>
+
+  <!--plain text div-->
+  <div class="top-editors-section" [class.hidden]="isComparing">
+    <!--leftbox-->
+    <div class="left-box" #leftBox>
+      <div class="header-bar">
+        <div class="div1">
+          <span class="mainstyel">Original Text</span>
+        </div>
+        <div class="div2">
+          <input type="file" (change)="onFileSelect($event)" #fileInput style="display: none" accept=".sql" multiple />
+          <span class="group" (click)="fileInput.click()" title="OpenFile">
+            <img src="../../../assets/Image/file-folder.svg" />
+          </span>
+          <span class="group" title="Copy" (click)="copyClipboard('input')">
+            <img src="../../../assets/Image/copy.svg" />
+          </span>
+          <span class="group" (click)="clearEditor('input')" [class.hidden]="isComparing" title="Delete">
+            <img src="../../../assets/Image/delete.svg" />
+          </span>
+          <span class="group" title="FullScreen" (click)="toggleFullScreen('left')">
+            <img src="../../../assets/Image/Expand.svg" />
+          </span>
+        </div>
+      </div>
+      <div class="editor-container" #inputContainer></div>
+    </div>
+
+    <!--rightbox-->
+    <div class="right-box" #rightBox>
+      <div class="header-bar">
+        <div class="div1">
+          <span class="mainstyel">Modified Text</span>
+        </div>
+        <div class="div2">
+          <span class="group" title="Download" (click)="downloadContent()">
+            <img src="../../../assets/Image/Download.svg" />
+          </span>
+          <span class="group" title="Copy" (click)="copyClipboard('output')">
+            <img src="../../../assets/Image/copy.svg" />
+          </span>
+          <span class="group" title="Delete" (click)="clearEditor('output')">
+            <img src="../../../assets/Image/delete.svg" />
+          </span>
+          <span class="group" title="FullScreen" (click)="toggleFullScreen('right')">
+            <img src="../../../assets/Image/Expand.svg" />
+          </span>
+        </div>
+      </div>
+      <div class="editor-container" #outputContainer></div>
+    </div>
+  </div>
+
+  <!--diff section div-->
+  <div class="diff-section" [class.hidden]="!isComparing" #fulldiffcontainer >
+    <!--headerbar-->
+    <div class="github-diff-header">
+      <span class="copy-btn" (click)="stopComparison()" title="stop-compring">
+        <img src="../../../assets/Image/stop-compare.svg" />
+      </span>
+      <div class="header-center">
+        <div class="navigation-controls">
+          <button class="nav-button" (click)="navigateToPreviousChange()" [disabled]="changeCount === 0"
+            title="Previous change (Arrow Up)">
+            <img src="../../../assets/Image/up-arrow.svg" />
+          </button>
+          <button class="nav-button" (click)="navigateToNextChange()" [disabled]="changeCount === 0"
+            title="Next change (Arrow Down)">
+            <img src="../../../assets/Image/down-arrow.svg" />
+          </button>
+        </div>
+        <span class="change-counter"> {{ changeCount }} changes </span>
+        <div class="diff-stats">
+          <span class="removal-stats">
+            <span class="removal-icon mr-1">-</span>
+            <span class="removal-count">{{ removalCount }}</span>
+          </span>
+          <span class="addition-stats">
+            <span class="addition-icon mr-1">+</span>
+            <span class="addition-count">{{ additionCount }}</span>
+          </span>
+        </div>
+      </div>
+      <span class="group" title="Copy" (click)="copyClipboard('diff-modified')">
+        <img src="../../../assets/Image/copy.svg" />
+      </span>
+      <span class="group" title="FullScreen" (click)="toggleFullScreen('diff')">
+        <img src="../../../assets/Image/Expand.svg" />
+      </span>
+    </div>
+    <div class="diff-view-container" #diffContainer></div>
+  </div>
+</div>
