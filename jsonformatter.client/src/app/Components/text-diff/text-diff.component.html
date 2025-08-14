@@ -1,84 +1,94 @@
 <app-header></app-header>
-<!--main container-->
+<!-- Main container for the entire component -->
 <div class="main-container">
-  <!--top button-->
+
+  <!-- Action button to start the comparison -->
   <div class="diff-action-container">
     <div class="diff-action-buttons">
       <button class="btn-diff compare" (click)="startComparison()" [class.hidden]="isComparing">
-        <img class="material-icons" src="../../../assets/Image/compare.svg" />
+        <img class="material-icons" src="../../../assets/Image/compare.svg" alt="Compare" />
         Compare
       </button>
     </div>
   </div>
 
-  <!--plain text div-->
+  <!-- Section for the two text editors, hidden when comparing -->
   <div class="top-editors-section" [class.hidden]="isComparing">
-    <!--leftbox-->
+    <!-- Left editor for original text -->
     <div class="left-box" #leftBox>
       <div class="header-bar">
         <div class="div1">
-          <span class="mainstyel">Original Text</span>
+          <span>Original Text</span>
         </div>
         <div class="div2">
-          <input type="file" (change)="onFileSelect($event)" #fileInput style="display: none" accept=".sql" multiple />
-          <span class="group" (click)="fileInput.click()" title="OpenFile">
-            <img src="../../../assets/Image/file-folder.svg" />
+          <!-- Hidden file input, triggered by the folder icon -->
+          <input type="file" (change)="onFileSelect($event)" #fileInput style="display: none" />
+          <span class="group" (click)="fileInput.click()" title="Open File">
+            <img src="../../../assets/Image/file-folder.svg" alt="Open" />
+          </span>
+          <span class="group" title="Format Code (Ctrl+Shift+F)" (click)="formatEditor('input')">
+            <img src="../../../assets/Image/format.svg" alt="Format" />
           </span>
           <span class="group" title="Copy" (click)="copyClipboard('input')">
-            <img src="../../../assets/Image/copy.svg" />
+            <img src="../../../assets/Image/copy.svg" alt="Copy" />
           </span>
-          <span class="group" (click)="clearEditor('input')" [class.hidden]="isComparing" title="Delete">
-            <img src="../../../assets/Image/delete.svg" />
+          <span class="group" (click)="clearEditor('input')" title="Delete">
+            <img src="../../../assets/Image/delete.svg" alt="Delete" />
           </span>
-          <span class="group" title="FullScreen" (click)="toggleFullScreen('left')">
-            <img src="../../../assets/Image/Expand.svg" />
+          <span class="group" title="Fullscreen" (click)="toggleFullScreen('left')">
+            <img src="../../../assets/Image/Expand.svg" alt="Fullscreen" />
           </span>
         </div>
       </div>
+      <!-- Container where the Monaco editor will be instantiated -->
       <div class="editor-container" #inputContainer></div>
     </div>
 
-    <!--rightbox-->
+    <!-- Right editor for modified text -->
     <div class="right-box" #rightBox>
       <div class="header-bar">
         <div class="div1">
-          <span class="mainstyel">Modified Text</span>
+          <span>Modified Text</span>
         </div>
         <div class="div2">
           <span class="group" title="Download" (click)="downloadContent()">
-            <img src="../../../assets/Image/Download.svg" />
+            <img src="../../../assets/Image/Download.svg" alt="Download" />
+          </span>
+          <span class="group" title="Format Code (Ctrl+Shift+F)" (click)="formatEditor('output')">
+            <img src="../../../assets/Image/format.svg" alt="Format" />
           </span>
           <span class="group" title="Copy" (click)="copyClipboard('output')">
-            <img src="../../../assets/Image/copy.svg" />
+            <img src="../../../assets/Image/copy.svg" alt="Copy" />
           </span>
           <span class="group" title="Delete" (click)="clearEditor('output')">
-            <img src="../../../assets/Image/delete.svg" />
+            <img src="../../../assets/Image/delete.svg" alt="Delete" />
           </span>
-          <span class="group" title="FullScreen" (click)="toggleFullScreen('right')">
-            <img src="../../../assets/Image/Expand.svg" />
+          <span class="group" title="Fullscreen" (click)="toggleFullScreen('right')">
+            <img src="../../../assets/Image/Expand.svg" alt="Fullscreen" />
           </span>
         </div>
       </div>
+      <!-- Container where the Monaco editor will be instantiated -->
       <div class="editor-container" #outputContainer></div>
     </div>
   </div>
 
-  <!--diff section div-->
-  <div class="diff-section" [class.hidden]="!isComparing" #fulldiffcontainer >
-    <!--headerbar-->
+  <!-- Section for the diff view, hidden when not comparing -->
+  <div class="diff-section" [class.hidden]="!isComparing" #fulldiffcontainer>
+    <!-- Header bar for the diff view with navigation and stats -->
     <div class="github-diff-header">
-      <span class="copy-btn" (click)="stopComparison()" title="stop-compring">
-        <img src="../../../assets/Image/stop-compare.svg" />
+      <span class="copy-btn" (click)="stopComparison()" title="Stop Comparing">
+        <img src="../../../assets/Image/stop-compare.svg" alt="Stop" />
       </span>
       <div class="header-center">
         <div class="navigation-controls">
           <button class="nav-button" (click)="navigateToPreviousChange()" [disabled]="changeCount === 0"
             title="Previous change (Arrow Up)">
-            <img src="../../../assets/Image/up-arrow.svg" />
+            <img src="../../../assets/Image/up-arrow.svg" alt="Up" />
           </button>
           <button class="nav-button" (click)="navigateToNextChange()" [disabled]="changeCount === 0"
             title="Next change (Arrow Down)">
-            <img src="../../../assets/Image/down-arrow.svg" />
+            <img src="../../../assets/Image/down-arrow.svg" alt="Down" />
           </button>
         </div>
         <span class="change-counter"> {{ changeCount }} changes </span>
@@ -93,13 +103,19 @@
           </span>
         </div>
       </div>
-      <span class="group" title="Copy" (click)="copyClipboard('diff-modified')">
-        <img src="../../../assets/Image/copy.svg" />
+      <span class="group" title="Copy Modified Text" (click)="copyClipboard('diff-modified')">
+        <img src="../../../assets/Image/copy.svg" alt="Copy" />
       </span>
-      <span class="group" title="FullScreen" (click)="toggleFullScreen('diff')">
-        <img src="../../../assets/Image/Expand.svg" />
+      <span class="group" title="Fullscreen" (click)="toggleFullScreen('diff')">
+        <img src="../../../assets/Image/Expand.svg" alt="Fullscreen" />
       </span>
     </div>
+    <!-- Container where the Monaco diff editor will be instantiated -->
     <div class="diff-view-container" #diffContainer></div>
   </div>
+</div>
+
+<!-- Status overlay for formatting -->
+<div class="format-status-overlay" *ngIf="isFormatting">
+  <span>{{ formatStatus }}</span>
 </div>

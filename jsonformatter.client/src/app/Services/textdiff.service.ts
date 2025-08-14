@@ -1,40 +1,58 @@
 import { Injectable, NgZone } from '@angular/core';
 import { MonacoService } from './monaco.service';
 
+// Interfaces defining the structure for various options and stats.
+export interface DiffStats {
+  changeCount: number;
+  currentChangeIndex: number;
+  removalCount: number;
+  additionCount: number;
+  removalLines: number;
+  additionLines: number;
+}
+
+export interface EditorOptions {
+  theme?: string;
+  fontSize?: number;
+  wordWrap?: 'on' | 'off';
+  minimap?: { enabled: boolean };
+  lineNumbers?: 'on' | 'off';
+  folding?: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
 })
-
-
 export class TextDiffService {
-  // 3. Add a property to hold the dynamically loaded monaco object
+  // Monaco editor instance, loaded dynamically.
   private monaco: any;
 
-  // 4. Change the editor and diff types from the monaco namespace to 'any'
+  // Editor instances for original, modified, and diff views.
   private inputEditor: any = null;
   private outputEditor: any = null;
   private diffEditor: any = null;
   private diffChanges: any[] = [];
 
+  // State management for diff statistics.
   private diffStats: DiffStats = this.getInitialDiffStats();
   private diffUpdateTimeout: any = null;
   private onDiffStatsChange?: (stats: DiffStats) => void;
 
-  private readonly monacoSupportedLanguages = new Set([
-    'typescript', 'javascript', 'json', 'html', 'css', 'scss', 'less',
-    'xml', 'yaml', 'sql', 'markdown', 'php'
-  ]);
-
-  // 5. Inject MonacoService into the constructor
+  // Injecting MonacoService for dynamic loading and NgZone for running tasks inside Angular's zone.
   constructor(private zone: NgZone, private monacoService: MonacoService) { }
 
+  /**
+   * Ensures the Monaco editor library is loaded before any editor operations.
+   */
   private async ensureMonacoLoaded(): Promise<void> {
     if (!this.monaco) {
       this.monaco = await this.monacoService.loadMonaco();
     }
   }
 
+  /**
+   * Returns the initial state for diff statistics.
+   */
   private getInitialDiffStats(): DiffStats {
     return {
       changeCount: 0,
@@ -46,6 +64,12 @@ export class TextDiffService {
     };
   }
 
+  /**
+   * Initializes the input and output Monaco editors with common options.
+   * @param inputContainer - The HTMLElement for the original text editor.
+   * @param outputContainer - The HTMLElement for the modified text editor.
+   * @param options - Optional configuration for the editors.
+   */
   public async initializeEditors(
     inputContainer: HTMLElement,
     outputContainer: HTMLElement,
@@ -64,8 +88,8 @@ export class TextDiffService {
       scrollbar: {
         vertical: 'auto',
         horizontal: 'auto',
-        verticalScrollbarSize: 5,
-        horizontalScrollbarSize: 5
+        verticalScrollbarSize: 7,
+        horizontalScrollbarSize: 7
       },
       lineDecorationsWidth: 10,
       lineNumbersMinChars: 3,
@@ -73,37 +97,35 @@ export class TextDiffService {
       formatOnType: true,
       insertSpaces: true,
       tabSize: 2,
-      detectIndentation: true
+      detectIndentation: true,
+      language: 'plaintext' // Default language is set to plaintext
     };
 
     this.inputEditor = this.monaco.editor.create(inputContainer, {
       ...commonEditorOptions,
-      language: 'plaintext',
       placeholder: 'Enter your original text here...',
     });
 
     this.outputEditor = this.monaco.editor.create(outputContainer, {
       ...commonEditorOptions,
-      language: 'plaintext',
       placeholder: 'Enter your modified text here...',
     });
 
     this.setupEditorListeners();
   }
 
+  /**
+   * Sets up listeners for content changes in the editors to update the diff view in real-time.
+   */
   private setupEditorListeners(): void {
     const setupListener = (editor: any, isOriginal: boolean) => {
       editor.onDidChangeModelContent(() => {
-        const text = editor.getValue();
-        const language = this.detectLanguage(text);
-        this.monaco.editor.setModelLanguage(editor.getModel()!, language);
-
         if (this.isComparing()) {
           const diffModel = this.diffEditor?.getModel();
           if (diffModel) {
+            const text = editor.getValue();
             const modelToUpdate = isOriginal ? diffModel.original : diffModel.modified;
             modelToUpdate.setValue(text);
-            this.monaco.editor.setModelLanguage(modelToUpdate, language);
             this.scheduleDiffCalculation();
           }
         }
@@ -114,6 +136,10 @@ export class TextDiffService {
     if (this.outputEditor) setupListener(this.outputEditor, false);
   }
 
+  /**
+   * Starts the comparison process, creating and displaying the diff editor.
+   * @param diffContainer - The HTMLElement to host the diff editor.
+   */
   public async startComparison(diffContainer: HTMLElement): Promise<void> {
     await this.ensureMonacoLoaded();
 
@@ -121,23 +147,27 @@ export class TextDiffService {
       throw new Error('Editors not initialized');
     }
 
-    await this.formatEditorContent(this.inputEditor);
-    await this.formatEditorContent(this.outputEditor);
+    // Format both editors before comparing.
+    await this.formatEditor('input');
+    await this.formatEditor('output');
 
     const originalText = this.inputEditor.getValue();
     const modifiedText = this.outputEditor.getValue();
-    const originalLanguage = this.detectLanguage(originalText);
-    const modifiedLanguage = this.detectLanguage(modifiedText);
 
     this.initializeDiffEditor(diffContainer);
 
-    const originalModel = this.monaco.editor.createModel(originalText, originalLanguage);
-    const modifiedModel = this.monaco.editor.createModel(modifiedText, modifiedLanguage);
+    // Create models for the diff editor.
+    const originalModel = this.monaco.editor.createModel(originalText, 'plaintext');
+    const modifiedModel = this.monaco.editor.createModel(modifiedText, 'plaintext');
 
     this.diffEditor!.setModel({ original: originalModel, modified: modifiedModel });
     this.scheduleDiffCalculation();
   }
 
+  /**
+   * Initializes the diff editor instance if it doesn't exist.
+   * @param diffContainer - The HTMLElement for the diff editor.
+   */
   private initializeDiffEditor(diffContainer: HTMLElement): void {
     if (this.diffEditor) {
       this.diffEditor.layout();
@@ -147,9 +177,7 @@ export class TextDiffService {
     this.diffEditor = this.monaco.editor.createDiffEditor(diffContainer, {
       theme: 'vs-light',
       automaticLayout: true,
-      wordWrap: 'on',
-      diffWordWrap: 'on',
-      minimap: { enabled: true },
+      minimap: { enabled: false },
       fontSize: 14,
       folding: true,
       renderSideBySide: true,
@@ -160,121 +188,36 @@ export class TextDiffService {
       diffCodeLens: true,
     });
 
+    // Recalculate diff stats whenever the diff is updated.
     this.diffEditor.onDidUpdateDiff(() => {
       this.zone.run(() => this.scheduleDiffCalculation());
     });
   }
 
-  private navigateToSpecificChange(index: number): void {
-    if (!this.diffEditor || index >= this.diffChanges.length) return;
-
-    const change = this.diffChanges[index];
-    const editor = this.diffEditor.getModifiedEditor();
-    const lineNumber = change.modifiedStartLineNumber || change.originalStartLineNumber;
-
-    if (lineNumber > 0) {
-      editor.revealLineInCenter(lineNumber, this.monaco.editor.ScrollType.Smooth);
-      editor.setPosition({ lineNumber, column: 1 });
-      editor.focus();
-    }
-  }
-
-  public clearEditor(editorType: 'input' | 'output'): void {
+  /**
+   * Formats the content of a specified editor using Monaco's built-in formatter.
+   * @param editorType - The editor to format ('input' or 'output').
+   */
+  public async formatEditor(editorType: 'input' | 'output'): Promise<void> {
     const editor = editorType === 'input' ? this.inputEditor : this.outputEditor;
     if (editor) {
-      editor.setValue('');
-      this.monaco.editor.setModelLanguage(editor.getModel()!, 'plaintext');
-    }
-  }
-
-  private detectLanguage(text: string): string {
-    const trimmedText = text.trim();
-    const sample = trimmedText.substring(0, 5000).toLowerCase();
-    if (sample.startsWith('<?xml')) return 'xml';
-    if (sample.startsWith('<!doctype html') || sample.startsWith('<html')) return 'html';
-    if (sample.startsWith('<?php')) return 'php';
-    if (sample.startsWith('#!/usr/bin/env python') || sample.startsWith('#!/usr/bin/python')) return 'python';
-    if ((trimmedText.startsWith('{') && trimmedText.endsWith('}')) || (trimmedText.startsWith('[') && trimmedText.endsWith(']'))) {
-      try { JSON.parse(trimmedText); return 'json'; } catch (e) { }
-    }
-    if (/^---\s*$/m.test(trimmedText) || /^\s*[\w-]+:\s*.+/m.test(trimmedText)) return 'yaml';
-    if (/\b(select\s+[\w*,\s]+\s+from|insert\s+into|update\s+\w+\s+set|delete\s+from|create\s+(table|view|database))\b/i.test(sample)) return 'sql';
-    if (/\b(def\s+\w+\s*\(|class\s+\w+\s*\(|import\s+\w+|from\s+\w+\s+import)\b/.test(trimmedText)) return 'python';
-    if (/#include\s*[<"]/.test(sample) || /using\s+namespace\s+std;/.test(sample) || /\b(cout|cin|endl)\b/.test(sample)) return 'cpp';
-    if (/using\s+System;/.test(trimmedText) || /\b(namespace|public\s+class|private\s+|protected\s+)\b/.test(sample)) return 'csharp';
-    if (/public\s+static\s+void\s+main/.test(sample) || /import\s+java\./.test(sample) || /\b(System\.out\.println|public\s+class\s+\w+)\b/.test(sample)) return 'java';
-    if (/\b(interface|type|enum|declare|namespace)\s+\w+/.test(sample) || /:\s*(string|number|boolean|any|void|Array<|Promise<)/.test(sample) || /\w+\?\s*:/.test(sample)) return 'typescript';
-    if (/\b(function|const|let|var|import|export|async|await)\b/.test(sample) || /=>\s*[{(]/.test(sample) || /document\.(getElementById|querySelector)/.test(sample)) return 'javascript';
-    if (/[@$][\w-]+\s*:/.test(sample)) return 'scss';
-    if (/@[\w-]+\s*:/.test(sample)) return 'less';
-    if (/[#.]?[\w-]+(\s*[,>+~]\s*[#.]?[\w-]+)*\s*\{/.test(trimmedText)) return 'css';
-    if (/\b(def|end|class|module|puts|require|yield)\b/.test(sample) && !/\b(function|var|const|let)\b/.test(sample)) return 'ruby';
-    if (/package\s+main/.test(sample) || /\b(func|import|fmt\.Print)\b/.test(sample)) return 'go';
-    if (/^#{1,6}\s+/.test(trimmedText) || /```[\w]*/.test(trimmedText) || /^\s*[-*+]\s+/.test(trimmedText) || /\[.*\]\(.*\)/.test(sample)) return 'markdown';
-    if (/^#!/.test(trimmedText) || /\b(echo|cd|ls|mkdir|grep|awk|sed)\b/.test(sample)) return 'shell';
-    return 'plaintext';
-  }
-
-  private async formatEditorContent(editor: any): Promise<void> {
-    const model = editor.getModel();
-    if (!model) return;
-    const language = model.getLanguageId();
-    const content = model.getValue();
-
-    try {
-      if (this.monacoSupportedLanguages.has(language)) {
-        await this.useMonacoFormatter(editor);
+      const formatAction = editor.getAction('editor.action.formatDocument');
+      if (formatAction) {
+        await formatAction.run();
       } else {
-        const formattedContent = await this.customFormat(content, language);
-        if (formattedContent !== content) model.setValue(formattedContent);
+        console.warn(`Formatting not available for the current language.`);
       }
-    } catch (error) {
-      console.warn(`Failed to format ${language} content:`, error);
-      const basicFormatted = this.basicFormat(content);
-      if (basicFormatted !== content) model.setValue(basicFormatted);
     }
   }
 
-  private async useMonacoFormatter(editor: any): Promise<void> {
-    const formatAction = editor.getAction('editor.action.formatDocument');
-    if (formatAction) await formatAction.run();
-  }
-
-  private async customFormat(content: string, language: string): Promise<string> {
-    const options: CustomFormatOptions = {
-      indentSize: 2,
-      insertSpaces: true,
-      trimTrailingWhitespace: true,
-      insertFinalNewline: true
-    };
-    switch (language) {
-      case 'python': return this.formatPython(content, options);
-      case 'ruby': return this.formatRuby(content, options);
-      case 'go': return this.formatGo(content, options);
-      case 'shell': return this.formatShell(content, options);
-      case 'cpp':
-      case 'csharp':
-      case 'java': return this.formatCStyleLanguage(content, options);
-      default: return this.basicFormat(content, options);
-    }
-  }
-
-  private formatPython(content: string, options: CustomFormatOptions): string { return content; }
-  private formatRuby(content: string, options: CustomFormatOptions): string { return content; }
-  private formatGo(content: string, options: CustomFormatOptions): string { return content; }
-  private formatShell(content: string, options: CustomFormatOptions): string { return content; }
-  private formatCStyleLanguage(content: string, options: CustomFormatOptions): string { return content; }
-  private basicFormat(content: string, options?: CustomFormatOptions): string { return content; }
-  private generateIndent(level: number, options: CustomFormatOptions): string {
-    const indentChar = options.insertSpaces ? ' '.repeat(options.indentSize) : '\t';
-    return indentChar.repeat(level);
-  }
-
+  /**
+   * Schedules a diff calculation to run after a short delay to batch updates.
+   */
   private scheduleDiffCalculation(): void {
     if (this.diffUpdateTimeout) clearTimeout(this.diffUpdateTimeout);
     this.diffUpdateTimeout = setTimeout(() => {
       this.zone.run(() => {
-        this.calculateDiffChanges();
+        this.calculateDiffStats();
         if (this.onDiffStatsChange) {
           this.onDiffStatsChange(this.diffStats);
         }
@@ -282,7 +225,10 @@ export class TextDiffService {
     }, 150);
   }
 
-  private calculateDiffChanges(): void {
+  /**
+   * Calculates statistics about the differences (additions, removals, etc.).
+   */
+  private calculateDiffStats(): void {
     if (!this.diffEditor || !this.isComparing()) {
       this.diffStats = this.getInitialDiffStats();
       return;
@@ -295,6 +241,7 @@ export class TextDiffService {
     let additionCount = 0;
 
     this.diffChanges.forEach(change => {
+      // A change can be a removal, an addition, or both (a modification).
       if (change.originalEndLineNumber > 0) {
         removalCount++;
         removalLines += (change.originalEndLineNumber - change.originalStartLineNumber + 1);
@@ -315,18 +262,54 @@ export class TextDiffService {
     };
   }
 
+  /**
+   * Navigates to a specific change in the diff editor.
+   */
+  private navigateToSpecificChange(index: number): void {
+    if (!this.diffEditor || index < 0 || index >= this.diffChanges.length) return;
+
+    const change = this.diffChanges[index];
+    const editor = this.diffEditor.getModifiedEditor();
+    const lineNumber = change.modifiedStartLineNumber || change.originalStartLineNumber;
+
+    if (lineNumber > 0) {
+      editor.revealLineInCenter(lineNumber, this.monaco.editor.ScrollType.Smooth);
+      editor.setPosition({ lineNumber, column: 1 });
+      editor.focus();
+    }
+  }
+
+  /**
+   * Navigates to the next difference in the diff view.
+   */
   public navigateToNextChange(): void {
     if (this.diffStats.changeCount === 0) return;
     this.diffStats.currentChangeIndex = (this.diffStats.currentChangeIndex + 1) % this.diffStats.changeCount;
     this.navigateToSpecificChange(this.diffStats.currentChangeIndex);
+    if (this.onDiffStatsChange) this.onDiffStatsChange(this.diffStats);
   }
 
+  /**
+   * Navigates to the previous difference in the diff view.
+   */
   public navigateToPreviousChange(): void {
     if (this.diffStats.changeCount === 0) return;
     this.diffStats.currentChangeIndex = (this.diffStats.currentChangeIndex - 1 + this.diffStats.changeCount) % this.diffStats.changeCount;
     this.navigateToSpecificChange(this.diffStats.currentChangeIndex);
+    if (this.onDiffStatsChange) this.onDiffStatsChange(this.diffStats);
   }
 
+  /**
+   * Clears the content of the specified editor.
+   */
+  public clearEditor(editorType: 'input' | 'output'): void {
+    const editor = editorType === 'input' ? this.inputEditor : this.outputEditor;
+    editor?.setValue('');
+  }
+
+  /**
+   * Retrieves the content from a specified editor.
+   */
   public getEditorContent(editorType: 'input' | 'output' | 'diff-modified'): string {
     switch (editorType) {
       case 'input': return this.inputEditor?.getValue() || '';
@@ -336,11 +319,17 @@ export class TextDiffService {
     }
   }
 
+  /**
+   * Sets the content of a specified editor.
+   */
   public setEditorContent(editorType: 'input' | 'output', content: string): void {
     const editor = editorType === 'input' ? this.inputEditor : this.outputEditor;
     editor?.setValue(content);
   }
 
+  /**
+   * Forces a layout recalculation for all editors.
+   */
   public layoutEditors(): void {
     setTimeout(() => {
       this.inputEditor?.layout();
@@ -349,18 +338,23 @@ export class TextDiffService {
     }, 50);
   }
 
+  /**
+   * Checks if the component is currently in comparison mode.
+   */
   public isComparing(): boolean {
     return !!this.diffEditor?.getModel();
   }
 
-  public getDiffStats(): DiffStats {
-    return { ...this.diffStats };
-  }
-
+  /**
+   * Sets the callback function to be invoked when diff stats change.
+   */
   public setOnDiffStatsChange(callback: (stats: DiffStats) => void): void {
     this.onDiffStatsChange = callback;
   }
 
+  /**
+   * Stops the comparison and disposes of the diff editor model.
+   */
   public stopComparison(): void {
     if (this.diffEditor) {
       const model = this.diffEditor.getModel();
@@ -377,6 +371,9 @@ export class TextDiffService {
     }
   }
 
+  /**
+   * Cleans up all editor instances to prevent memory leaks.
+   */
   public dispose(): void {
     if (this.diffUpdateTimeout) clearTimeout(this.diffUpdateTimeout);
     this.inputEditor?.dispose();
@@ -386,36 +383,4 @@ export class TextDiffService {
     this.outputEditor = null;
     this.diffEditor = null;
   }
-
-  public async formatEditor(editorType: 'input' | 'output'): Promise<void> {
-    const editor = editorType === 'input' ? this.inputEditor : this.outputEditor;
-    if (editor) {
-      await this.formatEditorContent(editor);
-    }
-  }
-}
-
-export interface DiffStats {
-  changeCount: number;
-  currentChangeIndex: number;
-  removalCount: number;
-  additionCount: number;
-  removalLines: number;
-  additionLines: number;
-}
-
-export interface EditorOptions {
-  theme?: string;
-  fontSize?: number;
-  wordWrap?: 'on' | 'off';
-  minimap?: { enabled: boolean };
-  lineNumbers?: 'on' | 'off';
-  folding?: boolean;
-}
-
-interface CustomFormatOptions {
-  indentSize: number;
-  insertSpaces: boolean;
-  trimTrailingWhitespace: boolean;
-  insertFinalNewline: boolean;
 }

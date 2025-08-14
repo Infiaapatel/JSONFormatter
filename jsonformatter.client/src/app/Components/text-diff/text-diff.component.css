@@ -6,10 +6,12 @@
   display: flex;
   flex-direction: column;
   background-color: #dedddd;
-  padding: 5px;
+  /* Reverted to original theme color */
+  padding: 10px;
   gap: 10px;
   overflow: hidden;
   box-sizing: border-box;
+  position: relative;
 }
 
 .top-editors-section {
@@ -20,11 +22,14 @@
   height: 100%;
 }
 
-.left-box, .right-box {
+.left-box,
+.right-box {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 /* Editor container for individual editors */
@@ -32,6 +37,8 @@
   width: 100%;
   height: 100%;
   border: 1px solid #444444;
+  /* Reverted to original theme color */
+  border-top: none;
   flex-grow: 1;
   overflow: hidden;
   min-height: 0;
@@ -46,91 +53,87 @@
   align-items: center;
   justify-content: space-between;
   background-color: #234653;
+  /* Reverted to original theme color */
   color: #ffffff;
-  padding: 0 8px;
+  /* Reverted to original theme color */
+  padding: 0 12px;
   flex-shrink: 0;
+  font-weight: 600;
 }
 
-/* Header bar icon divs */
-.div1 {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
+/* Header bar icon containers */
+.div1,
 .div2 {
   display: flex;
-  justify-content: flex-end;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
 }
 
-/* Hover effects for icons */
+/* Style for interactive icons in the header */
 .group {
   position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
+  justify-content: center;
+  padding: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease-in-out;
+  border-radius: 6px;
 }
 
-  .group:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-  }
+.group:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  /* Reverted to original theme color */
+}
 
-  /* Click effect for header icons */
-  .group:active {
-    transform: translateY(1.5px); /* Slight downward push */
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Subtle glow */
-    background-color: rgba(255, 255, 255, 0.3); /* Slightly brighter */
-  }
+.group:active {
+  transform: scale(0.95);
+  background-color: rgba(255, 255, 255, 0.3);
+  /* Reverted to original theme color */
+}
+
+.group img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+  /* Ensure icons are visible on dark header */
+}
 
 .diff-action-container {
   display: flex;
   justify-content: center;
-  margin-top: 6px;
-}
-
-.diff-action-buttons {
-  display: flex;
-  gap: 16px;
+  margin-bottom: 5px;
 }
 
 .btn-diff {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 18px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
   color: #246453;
+  /* Reverted to original theme color */
   background-color: transparent;
+  /* Reverted to original theme color */
   border: 2px solid #246453;
+  /* Reverted to original theme color */
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-in-out;
 }
 
-  .btn-diff:hover {
-    background-color: #ffffff;
-  }
+.btn-diff:hover {
+  background-color: #ffffff;
+  /* Reverted to original theme color */
+}
 
-  .btn-diff .icon {
-    width: 20px;
-    height: 20px;
-    filter: invert(28%) sepia(13%) saturate(1134%) hue-rotate(94deg) brightness(91%) contrast(86%);
-  }
-
-  /* Optional: Different hover effect for each button if needed */
-  .btn-diff.compare:hover {
-    box-shadow: 0 0 6px rgba(36, 100, 83, 0.4);
-  }
-
-  .btn-diff.stop-compare:hover {
-    box-shadow: 0 0 6px rgba(36, 100, 83, 0.4);
-  }
+.btn-diff img {
+  width: 18px;
+  height: 18px;
+  filter: none;
+  /* Removed filter as icon color is handled by parent */
+}
 
 /* Diff Comparison Section */
 .diff-section {
@@ -145,17 +148,20 @@
   border-radius: 6px;
 }
 
-/* Updated GitHub-style diff header */
+/* GitHub-style diff header */
 .github-diff-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #234653;
+  /* Reverted to original theme color */
   border-bottom: 1px solid #d0d7de;
   padding: 8px 16px;
   font-size: 12px;
   color: #ffffff;
+  /* Reverted to original theme color */
   height: 40px;
+  flex-shrink: 0;
 }
 
 .header-center {
@@ -166,20 +172,21 @@
   justify-content: center;
 }
 
-/* Navigation controls */
+/* Navigation controls for diff changes */
 .navigation-controls {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   align-items: center;
 }
 
 .nav-button {
-  background-color: transparent; /* Changed */
-  border: none; /* Changed */
-  color: #ffffff; /* Changed */
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: #ffffff;
+  /* Reverted to original theme color */
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,28 +195,26 @@
   padding: 0;
 }
 
-  .nav-button:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.1); /* Changed */
-    border-radius: 4px; /* Changed */
-  }
+.nav-button:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  /* Reverted to original theme color */
+}
 
-  .nav-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background-color: transparent; /* Changed */
-    color: #ffffff; /* Changed */
-  }
+.nav-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
-  /* Click effect for header icons */
-  .nav-button:active {
-    transform: translateY(1.5px); /* Slight downward push */
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Subtle glow */
-    background-color: rgba(255, 255, 255, 0.3); /* Slightly brighter */
-  }
+.nav-button img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
 
 .change-counter {
-  font-size: 15px;
+  font-size: 14px;
   color: #ffffff;
+  /* Reverted to original theme color */
   font-weight: 500;
   white-space: nowrap;
 }
@@ -219,80 +224,86 @@
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .removal-stats {
   display: flex;
   align-items: center;
+  gap: 4px;
   background-color: #ffebe9;
+  /* Reverted to original theme color */
   border-radius: 2px;
-  padding: 2px 4px; /* Added padding for better appearance */
+  padding: 2px 4px;
 }
 
 .addition-stats {
   display: flex;
   align-items: center;
+  gap: 4px;
   background-color: #dafbe1;
+  /* Reverted to original theme color */
   border-radius: 2px;
-  padding: 2px 4px; /* Added padding for better appearance */
-}
-
-.removal-icon {
-  color: #d1242f;
-  font-weight: bold;
-  font-size: 14px;
-  width: 14px;
-  text-align: center;
-}
-
-.addition-icon {
-  color: #1f883d;
-  font-weight: bold;
-  font-size: 14px;
-  width: 14px;
-  text-align: center;
+  padding: 2px 4px;
 }
 
 .removal-count {
   color: #d1242f;
-  font-weight: 600;
-  min-width: 8px;
-  text-align: left;
+  /* Reverted to original theme color */
 }
 
 .addition-count {
   color: #1f883d;
-  font-weight: 600;
-  min-width: 8px;
-  text-align: left;
+  /* Reverted to original theme color */
 }
 
 .copy-btn {
   background: transparent;
   color: #ffffff;
+  /* Reverted to original theme color */
   cursor: pointer;
-  font-size: 12px;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.2s;
-  height: 24px;
+  height: 28px;
   font-weight: 500;
-  border: none; /* Changed */
+  border: none;
+  display: flex;
+  align-items: center;
 }
 
-  .copy-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border-color: transparent;
-    border-radius: 4px;
-  }
+.copy-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  /* Reverted to original theme color */
+}
 
-/* Container for the diff editor */
+.copy-btn img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
+
+/* Container for the diff editor view */
 .diff-view-container {
   flex-grow: 1;
   overflow: hidden;
   min-height: 0;
+}
+
+.format-status-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 1000;
+  border-radius: 6px;
 }
 
 /* Utility class to hide elements */
@@ -302,8 +313,8 @@
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
-  width: 7px;
-  margin-left: 1rem;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -312,100 +323,28 @@
 
 ::-webkit-scrollbar-thumb {
   background-color: #555;
+  /* Reverted to original theme color */
   border-radius: 4px;
   border: 2px solid #f1f1f1;
 }
 
-/* Responsive design */
-@media screen and (max-width: 768px) {
-  .github-diff-header {
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 16px;
-  }
-
-  .header-center {
-    order: 1;
-    width: 100%;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .copy-btn:first-child {
-    order: 0;
-    align-self: flex-start;
-  }
-
-  .copy-btn:last-child {
-    order: 2;
-    align-self: flex-end;
-  }
-
-  .diff-stats {
-    gap: 12px;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8a8a8;
 }
 
-@media screen and (max-width: 480px) {
-  .main-container {
-    height: auto;
-    min-height: calc(100vh - 60px);
-    overflow-y: auto;
-  }
-
+/* Responsive design adjustments */
+@media screen and (max-width: 768px) {
   .top-editors-section {
     flex-direction: column;
     height: auto;
-    max-height: none;
-  }
-
-  .left-box, .right-box {
-    width: 100%;
   }
 
   .editor-container {
-    height: 25rem;
-    min-height: 200px;
+    height: 40vh;
+    /* Give a relative height on smaller screens */
   }
 
   .diff-section {
-    height: 25rem;
-    min-height: 200px;
-  }
-
-  .diff-view-container {
-    height: 100%;
-  }
-
-  .github-diff-header {
-    padding: 8px 12px;
-  }
-
-  .header-center {
-    gap: 6px;
-  }
-
-  .navigation-controls {
-    gap: 1px;
-  }
-
-  .nav-button {
-    width: 22px;
-    height: 22px;
-  }
-
-  .copy-btn {
-    padding: 2px 6px;
-    height: 22px;
-    font-size: 11px;
-  }
-
-  .change-counter {
-    font-size: 11px;
-  }
-
-  .diff-stats {
-    font-size: 11px;
-    gap: 6px;
+    height: 80vh;
   }
 }
